@@ -123,15 +123,20 @@ To tell Storybook about the component we are documenting, we create a `default` 
 
 - `component` -- the component itself,
 - `title` -- how to refer to the component in the sidebar of the Storybook app,
-- `excludeStories` -- information required by the story, but should not be rendered by the Storybook app.
+- `excludeStories` -- exports in the story file that should not be rendered as stories by Storybook.
+- `argTypes` -- specify the [args](https://storybook.js.org/docs/angular/api/argtypes) behavior in each story.
 
 To define our stories, we export a function for each of our test states to generate a story. The story is a function that returns a rendered element (i.e. a component class with a set of props) in a given state---exactly like a [Stateless Functional Component](https://angular.io/guide/component-interaction).
 
-`action()` allows us to create a callback that appears in the **actions** panel of the Storybook UI when clicked. So when we build a pin button, we’ll be able to determine in the test UI if a button click is successful.
-
-As we need to pass the same set of actions to all permutations of our component, it is convenient to bundle them up into a single `actionsData` variable and use pass them into our story definition each time.
+As we need to pass the same set of actions to all permutations of our component, it is convenient to bundle them up into a single `actionsData` variable and pass them into our story definition each time.
 
 Another nice thing about bundling the `actionsData` that a component needs, is that you can `export` them and use them in stories for components that reuse this component, as we'll see later.
+
+<div class="aside">
+💡 <code>Template.bind({})</code> is a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind">standard JavaScript</a> technique for making a copy of a function. We use this technique to allow each exported story to set its own properties, but use the same implementation.
+</div>
+
+Arguments or [`args`](https://storybook.js.org/docs/react/writing-stories/args) for short, allow us to live edit our components with the controls addon without restarting Storybook. Once an [`args`](https://storybook.js.org/docs/react/writing-stories/args) value changes so does the component.
 
 When creating a story we use a base task (`taskData`) to build out the shape of the task the component expects. This is typically modelled from what the true data looks like. Again, `export`-ing this shape will enable us to reuse it in later stories, as we'll see.
 
@@ -151,6 +156,10 @@ module.exports = {
 };
 ```
 
+[`parameters`](https://storybook.js.org/docs/react/writing-stories/parameters) are typically used to control the behavior of Storybook's features and addons. In our case we're going to use them to configure how the `actions` (mocked callbacks) are handled.
+
+`actions` allows us to create callbacks that appear in the **actions** panel of the Storybook UI when clicked. So when we build a pin button, we’ll be able to determine in the test UI if a button click is successful.
+
 Once we’ve done this, restarting the Storybook server should yield test cases for the three states of TaskComponent:
 
 <video autoPlay muted playsInline controls >
@@ -159,22 +168,6 @@ Once we’ve done this, restarting the Storybook server should yield test cases 
     type="video/mp4"
   />
 </video>
-
-## Specify data requirements
-
-It’s best practice to specify the shape of data that a component expects. Not only is it self documenting, it also helps catch problems early. Here, we'll use Typescript and create a interface for the `Task` model.
-
-Create a new folder called `models` inside `app` folder and inside a new file called `task.model.ts` with the following content:
-
-```typescript
-// src/app/models/task.model.ts
-
-export interface Task {
-  id: string;
-  title: string;
-  state: string;
-}
-```
 
 ## Build out the states
 
@@ -243,7 +236,23 @@ The additional markup from above combined with the CSS we imported earlier yield
   />
 </video>
 
-## Component built!
+## Specify data requirements
+
+It’s best practice to specify the shape of data that a component expects. Not only is it self documenting, it also helps catch problems early. Here, we'll use Typescript and create a interface for the `Task` model.
+
+Create a new folder called `models` inside `app` folder and inside a new file called `task.model.ts` with the following content:
+
+```typescript
+// src/app/models/task.model.ts
+
+export interface Task {
+  id: string;
+  title: string;
+  state: string;
+}
+```
+
+## Component built
 
 We’ve now successfully built out a component without needing a server or running the entire frontend application. The next step is to build out the remaining Taskbox components one by one in a similar fashion.
 
