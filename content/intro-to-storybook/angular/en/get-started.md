@@ -38,7 +38,7 @@ npm run test
 # Start the component explorer on port 6006:
 npm run storybook
 
-# Run the frontend app proper on port 4200:
+# Run the frontend app properly on port 4200:
 npm run start
 ```
 
@@ -53,19 +53,19 @@ Depending on what part of the app you’re working on, you may want to run one o
 At this stage it's safe to add our files to a local repository. Run the following commands to initialize a local repository, add and commit the changes we've done so far.
 
 ```shell
-$ git init
+git init
 ```
 
 Followed by:
 
 ```shell
-$ git add .
+git add .
 ```
 
 And finally:
 
 ```shell
-$ git commit -m "first commit"
+git commit -m "first commit"
 ```
 
 Let's start building our first component!
